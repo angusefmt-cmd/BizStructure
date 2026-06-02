@@ -16,11 +16,15 @@
       "dest": "/api/$1"
     },
     {
+      "src": "/",
+      "dest": "/public/index.html"
+    },
+    {
       "src": "/(.*\\.(css|js|html|ico|png|jpg|svg|webp|woff2?))",
       "dest": "/public/$1"
     },
     {
-      "src": "/(.*)",
+      "src": "/(.+)",
       "dest": "/public/$1.html"
     }
   ]
