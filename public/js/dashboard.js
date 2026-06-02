@@ -4,6 +4,9 @@
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Store rows by index so onclick never embeds raw JSON in HTML attributes
+const _rowStore = [];
+
 async function signOut() {
   await sb.auth.signOut();
   window.location.href = 'index.html';
@@ -30,18 +33,29 @@ async function init() {
 
   document.getElementById('dash-loading').classList.add('hidden');
 
-  if (error || !data || data.length === 0) {
+  if (error) {
+    // Show empty state but log the real error so it isn't silently swallowed
+    console.error('Failed to load analyses:', error.message);
     document.getElementById('dash-empty').classList.remove('hidden');
     return;
   }
 
+  if (!data || data.length === 0) {
+    document.getElementById('dash-empty').classList.remove('hidden');
+    return;
+  }
+
+  // Populate store so openModal(index) can retrieve full row safely
+  _rowStore.length = 0;
+  data.forEach(row => _rowStore.push(row));
+
   const grid = document.getElementById('dash-grid');
   grid.classList.remove('hidden');
-  grid.innerHTML = data.map(row => {
+  grid.innerHTML = data.map((row, idx) => {
     const r = row.result_json;
     const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     return `
-      <div class="dash-card" onclick="openModal(${JSON.stringify(JSON.stringify(row))})">
+      <div class="dash-card" onclick="openModal(${idx})">
         <div class="dash-card-title">${escHtml(r.businessName || row.business_name)}</div>
         <div class="dash-card-date">${date} · ${escHtml(row.industry || '')}</div>
         <div class="dash-card-scores">
@@ -59,8 +73,9 @@ async function init() {
   }).join('');
 }
 
-function openModal(rowJson) {
-  const row = JSON.parse(rowJson);
+function openModal(idx) {
+  const row = _rowStore[idx];
+  if (!row) return;
   const r = row.result_json;
   const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
