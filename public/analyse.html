@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BizStructure — Analyse Your Business</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Biz<span>Structure</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="analyse.html" class="nav-link active">Analyse</a>
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </div>
+    <div class="nav-actions">
+      <a href="auth.html" class="btn-ghost" id="nav-signin">Sign in</a>
+      <a href="auth.html" class="btn-primary-sm hidden" id="nav-signout">Sign out</a>
+    </div>
+  </div>
+</nav>
+
+<main class="analyse-main">
+  <!-- INPUT STATE -->
+  <div id="state-input">
+    <div class="analyse-header">
+      <h1>Analyse your business</h1>
+      <p>Fill in the details below. The more specific you are, the better your results.</p>
+    </div>
+
+    <div class="analyse-form">
+      <div class="form-section">
+        <label class="form-label">Business name <span class="optional">(optional)</span></label>
+        <input type="text" id="biz-name" class="form-input" placeholder="e.g. Sparkle Cleaning Co." />
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Describe your business <span class="required">*</span></label>
+        <p class="form-hint">What do you sell or offer? How do you get clients? How does your day-to-day run?</p>
+        <textarea id="biz-description" class="form-textarea" rows="6" placeholder="e.g. I run a residential and commercial cleaning company in Lagos. We have 6 cleaners and 1 supervisor. Clients come through word of mouth and Instagram. I handle all quotes, scheduling, and client calls myself. My biggest problem is that the business stops whenever I'm not around..."></textarea>
+        <div class="char-count"><span id="char-num">0</span> / 2000 characters</div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label">Industry</label>
+          <select id="biz-industry" class="form-select">
+            <option>Services</option>
+            <option>Retail</option>
+            <option>Food & beverage</option>
+            <option>Healthcare</option>
+            <option>Education & training</option>
+            <option>Technology</option>
+            <option>Construction</option>
+            <option>Logistics & transport</option>
+            <option>Agriculture</option>
+            <option>Real estate</option>
+            <option>Finance & consulting</option>
+            <option>Creative & media</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <label class="form-label">Team size</label>
+          <select id="biz-size" class="form-select">
+            <option>Solo founder</option>
+            <option>2–5 people</option>
+            <option>6–15 people</option>
+            <option>16–50 people</option>
+            <option>50+ people</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-section">
+          <label class="form-label">Business age</label>
+          <select id="biz-age" class="form-select">
+            <option>Under 1 year</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5–10 years</option>
+            <option>10+ years</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <label class="form-label">Main growth goal</label>
+          <select id="biz-goal" class="form-select">
+            <option>Reduce owner dependency</option>
+            <option>Increase revenue</option>
+            <option>Expand to new markets</option>
+            <option>Build a team</option>
+            <option>Improve operations</option>
+            <option>Attract investors</option>
+            <option>Franchise / replicate</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="form-label">Biggest challenge right now</label>
+        <input type="text" id="biz-challenge" class="form-input" placeholder="e.g. Everything depends on me, I can't take a day off" />
+      </div>
+
+      <div id="analyse-error" class="form-error hidden"></div>
+
+      <button class="btn-analyse" id="analyse-btn" onclick="startAnalysis()">
+        <span id="analyse-btn-text">Analyse my business →</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div id="state-loading" class="hidden">
+    <div class="loading-wrapper">
+      <div class="loading-orb">
+        <div class="orb-ring"></div>
+        <div class="orb-ring ring2"></div>
+        <div class="orb-core"></div>
+      </div>
+      <h2 id="loading-title">Analysing your business...</h2>
+      <p id="loading-sub">This takes about 30 seconds</p>
+      <div class="loading-steps" id="loading-steps">
+        <div class="lstep" id="lstep-1"><span class="lstep-dot"></span>Reading your business description</div>
+        <div class="lstep" id="lstep-2"><span class="lstep-dot"></span>Identifying core functions & gaps</div>
+        <div class="lstep" id="lstep-3"><span class="lstep-dot"></span>Mapping processes & roles</div>
+        <div class="lstep" id="lstep-4"><span class="lstep-dot"></span>Building your scaling blueprint</div>
+        <div class="lstep" id="lstep-5"><span class="lstep-dot"></span>Generating quick wins & roadmap</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTS STATE -->
+  <div id="state-results" class="hidden">
+    <div id="results-output"></div>
+    <div class="results-actions">
+      <button class="btn-secondary" onclick="resetForm()">← Analyse another business</button>
+      <a href="dashboard.html" class="btn-secondary">View all analyses →</a>
+    </div>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div id="state-error" class="hidden">
+    <div class="error-box">
+      <div class="error-icon">⚠</div>
+      <h3>Something went wrong</h3>
+      <p id="error-message">Please try again.</p>
+      <button class="btn-secondary" onclick="resetForm()">Try again</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth-state.js"></script>
+<script src="js/analyse.js"></script>
+</body>
+</html>

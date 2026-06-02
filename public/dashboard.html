@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BizStructure — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Biz<span>Structure</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="analyse.html" class="nav-link">Analyse</a>
+      <a href="dashboard.html" class="nav-link active">Dashboard</a>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-ghost" id="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="dashboard-main">
+  <!-- Not logged in -->
+  <div id="state-noauth" class="hidden">
+    <div class="noauth-box">
+      <h2>Sign in to view your dashboard</h2>
+      <p>Your saved analyses will appear here once you're signed in.</p>
+      <a href="auth.html" class="btn-analyse" style="display:inline-block;margin-top:1.5rem;">Sign in →</a>
+    </div>
+  </div>
+
+  <!-- Logged in -->
+  <div id="state-auth" class="hidden">
+    <div class="dash-header">
+      <div>
+        <h1>Your analyses</h1>
+        <p id="dash-welcome">Welcome back</p>
+      </div>
+      <a href="analyse.html" class="btn-analyse-sm">+ New analysis</a>
+    </div>
+
+    <div id="dash-loading" class="dash-loading">Loading your analyses...</div>
+
+    <div id="dash-empty" class="dash-empty hidden">
+      <div class="empty-icon">📊</div>
+      <h3>No analyses yet</h3>
+      <p>Analyse your first business to see it here.</p>
+      <a href="analyse.html" class="btn-analyse" style="display:inline-block;margin-top:1rem;">Analyse a business →</a>
+    </div>
+
+    <div id="dash-grid" class="dash-grid hidden"></div>
+  </div>
+</main>
+
+<!-- Analysis Modal -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
