@@ -1,8 +1,3 @@
--- ============================================================
--- BIZSTRUCTURE — SUPABASE SCHEMA
--- Run this in your Supabase SQL Editor
--- ============================================================
-
 -- Enable UUID extension (already enabled on most Supabase projects)
 create extension if not exists "uuid-ossp";
 
@@ -22,17 +17,29 @@ alter table public.analyses enable row level security;
 -- Policy: users can insert their own analyses
 create policy "Users can insert own analyses"
   on public.analyses for insert
-  with check (auth.uid() = user_id);
+  to authenticated
+  with check (
+    auth.uid() IS NOT NULL
+    AND auth.uid() = user_id
+  );
 
 -- Policy: users can read their own analyses
 create policy "Users can read own analyses"
   on public.analyses for select
-  using (auth.uid() = user_id);
+  to authenticated
+  using (
+    auth.uid() IS NOT NULL
+    AND auth.uid() = user_id
+  );
 
 -- Policy: users can delete their own analyses
 create policy "Users can delete own analyses"
   on public.analyses for delete
-  using (auth.uid() = user_id);
+  to authenticated
+  using (
+    auth.uid() IS NOT NULL
+    AND auth.uid() = user_id
+  );
 
 -- Index for faster queries by user
 create index on public.analyses (user_id, created_at desc);
