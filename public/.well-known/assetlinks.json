@@ -1,12 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.yourname.bizstructure",
-      "sha256_cert_fingerprints": [
-        "REPLACE_WITH_SHA256_FROM_PWABUILDER_SIGNING_KEY"
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.biz_structure.twa",
+        "sha256_cert_fingerprints": ["7E:7C:90:A2:37:85:D1:30:A2:9E:B2:F7:69:E7:CA:2E:04:AC:5A:87:B7:11:41:F2:1F:22:A1:B3:0E:22:D7:43"]
+      }
+    }]
