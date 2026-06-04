@@ -5,7 +5,7 @@
 // always get fresh files.
 // ============================================================
 
-const CACHE_NAME = 'bizstructure-v1';
+const CACHE_NAME = 'bizstructure-v2';
 
 // Pages and assets to pre-cache on install
 const PRECACHE_URLS = [

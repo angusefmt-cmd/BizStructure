@@ -65,9 +65,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script>
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  supabase.auth.getSession().then(({ data }) => {
+  sbClient.auth.getSession().then(({ data }) => {
     if (data.session) window.location.href = 'dashboard.html';
   });
 
@@ -86,7 +86,7 @@
     errEl.classList.add('hidden');
     btn.textContent = 'Signing in...'; btn.disabled = true;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await sbClient.auth.signInWithPassword({ email, password });
     if (error) {
       const msg = error.message.toLowerCase().includes('email not confirmed')
         ? 'Please confirm your email address before signing in. Check your inbox.'
@@ -118,13 +118,19 @@
       btn.textContent = 'Create account'; btn.disabled = false;
       return;
     }
-    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    const { data: signUpData, error } = await sbClient.auth.signUp({ email, password, options: { data: { full_name: name }, emailRedirectTo: window.location.origin + '/auth.html' } });
     if (error) {
       errEl.textContent = error.message; errEl.classList.remove('hidden');
       btn.textContent = 'Create account'; btn.disabled = false;
     } else {
-      sucEl.textContent = 'Account created! Check your email to confirm, then sign in.';
-      sucEl.classList.remove('hidden');
+      // If identities array is empty, this email is already registered & confirmed
+      if (signUpData?.user && signUpData.user.identities && signUpData.user.identities.length === 0) {
+        errEl.textContent = 'An account with this email already exists. Please sign in instead.';
+        errEl.classList.remove('hidden');
+      } else {
+        sucEl.textContent = 'Account created! Check your email to confirm your address, then sign in.';
+        sucEl.classList.remove('hidden');
+      }
       btn.textContent = 'Create account'; btn.disabled = false;
     }
   }
