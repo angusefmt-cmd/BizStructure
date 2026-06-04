@@ -62,7 +62,7 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script>
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -88,7 +88,10 @@
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      errEl.textContent = error.message; errEl.classList.remove('hidden');
+      const msg = error.message.toLowerCase().includes('email not confirmed')
+        ? 'Please confirm your email address before signing in. Check your inbox.'
+        : error.message;
+      errEl.textContent = msg; errEl.classList.remove('hidden');
       btn.textContent = 'Sign in'; btn.disabled = false;
     } else {
       window.location.href = 'dashboard.html';
@@ -105,6 +108,16 @@
     errEl.classList.add('hidden'); sucEl.classList.add('hidden');
     btn.textContent = 'Creating account...'; btn.disabled = true;
 
+    if (!name || !email || !password) {
+      errEl.textContent = 'Please fill in all fields.'; errEl.classList.remove('hidden');
+      btn.textContent = 'Create account'; btn.disabled = false;
+      return;
+    }
+    if (password.length < 8) {
+      errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.remove('hidden');
+      btn.textContent = 'Create account'; btn.disabled = false;
+      return;
+    }
     const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: name } } });
     if (error) {
       errEl.textContent = error.message; errEl.classList.remove('hidden');
